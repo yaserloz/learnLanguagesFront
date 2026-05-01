@@ -134,6 +134,7 @@ textarea {
 input:focus,
 select:focus,
 textarea:focus,
+.editor-surface:focus,
 button:focus-visible {
   border-color: #2d6f62;
   outline: 3px solid rgba(45, 111, 98, 0.16);
@@ -448,6 +449,118 @@ button:focus-visible {
   display: grid;
   gap: 14px;
   grid-template-columns: 160px minmax(160px, 1fr);
+}
+
+.rich-editor {
+  background: #ffffff;
+  border: 1px solid #cfd3cb;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.editor-toolbar {
+  align-items: center;
+  background: #f2f4f0;
+  border-bottom: 1px solid #d9ddd5;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 8px;
+}
+
+.editor-toolbar select {
+  min-height: 34px;
+  min-width: 130px;
+  padding: 6px 8px;
+}
+
+.toolbar-group {
+  display: flex;
+  gap: 4px;
+}
+
+.editor-toolbar button {
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  min-height: 34px;
+  min-width: 38px;
+  padding: 0 9px;
+}
+
+.editor-toolbar button.active-source {
+  background: #236255;
+  border-color: #236255;
+  color: #ffffff;
+}
+
+.editor-surface,
+.editor-source {
+  border: 0;
+  border-radius: 0;
+  color: #1d2522;
+  line-height: 1.65;
+  min-height: 260px;
+  outline-offset: -3px;
+  padding: 16px;
+  width: 100%;
+}
+
+.editor-surface {
+  font-size: 1rem;
+  font-weight: 500;
+  overflow: auto;
+}
+
+.editor-surface:empty::before {
+  color: #8a928b;
+  content: attr(data-placeholder);
+  pointer-events: none;
+}
+
+.editor-surface h2,
+.editor-surface h3,
+.note-body h2,
+.note-body h3 {
+  line-height: 1.2;
+  margin: 0.8em 0 0.35em;
+}
+
+.editor-surface p,
+.editor-surface ul,
+.editor-surface ol,
+.editor-surface blockquote,
+.editor-surface pre,
+.note-body p,
+.note-body ul,
+.note-body ol,
+.note-body blockquote,
+.note-body pre {
+  margin: 0 0 0.85em;
+}
+
+.editor-surface blockquote,
+.note-body blockquote {
+  border-left: 4px solid #b9c7bd;
+  color: #4c5851;
+  margin-left: 0;
+  padding-left: 14px;
+}
+
+.editor-surface pre,
+.note-body pre {
+  background: #eef1ed;
+  border-radius: 6px;
+  overflow: auto;
+  padding: 12px;
+}
+
+.editor-source {
+  font-family:
+    "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  resize: vertical;
 }
 
 .save-button {

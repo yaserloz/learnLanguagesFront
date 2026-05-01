@@ -4,6 +4,7 @@ import type {
   LearningNote,
   LearningNoteKind,
 } from "../types/learning";
+import { RichTextEditor } from "./RichTextEditor";
 
 type NoteFormProps = {
   note: LearningNote | null;
@@ -146,17 +147,14 @@ export function NoteForm({
         />
       </label>
 
-      <label className="field">
-        Text HTML
-        <textarea
+      <div className="field">
+        <label htmlFor="text-html">Note body</label>
+        <RichTextEditor
+          id="text-html"
           value={form.text_html}
-          placeholder="<p>appointment</p>"
-          rows={9}
-          onChange={(event) =>
-            setForm({ ...form, text_html: event.target.value })
-          }
+          onChange={(text_html) => setForm({ ...form, text_html })}
         />
-      </label>
+      </div>
 
       <label className="field">
         Tags
