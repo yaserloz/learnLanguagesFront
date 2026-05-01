@@ -2,7 +2,11 @@
 
 Build a React frontend for a personal language-learning app backed by `LanguageLearning.Api`.
 
-The first target language is German, but the UI and data model must support multiple languages.
+The first target language is German. The app must support exactly these language codes:
+
+- `de`
+- `fr`
+- `en`
 
 ## Backend
 
@@ -36,7 +40,7 @@ Create a small study app where the user can save and review:
 
 Each note has:
 
-- language code, such as `de`, `en`, `fr`
+- language code: `de`, `fr`, or `en`
 - kind: `word`, `phrase`, or `grammar`
 - title
 - HTML note body as `text_html`
@@ -105,7 +109,7 @@ npm run dev
 ```ts
 type LearningNote = {
   id: string;
-  language_code: string;
+  language_code: "de" | "fr" | "en";
   kind: "word" | "phrase" | "grammar";
   title: string;
   text_html: string;
@@ -121,7 +125,7 @@ type LearningNote = {
 
 ```ts
 type CreateLearningNoteRequest = {
-  language_code: string;
+  language_code: "de" | "fr" | "en";
   kind: "word" | "phrase" | "grammar";
   title: string;
   text_html: string;
@@ -133,7 +137,7 @@ type CreateLearningNoteRequest = {
 
 ```ts
 type UpdateLearningNoteRequest = {
-  language_code?: string;
+  language_code?: "de" | "fr" | "en";
   kind?: "word" | "phrase" | "grammar";
   title?: string;
   text_html?: string;
@@ -212,6 +216,7 @@ For the first version, a plain textarea for `text_html` is enough. A rich text e
 Validation:
 
 - language code required
+- language code must be `de`, `fr`, or `en`
 - kind required
 - title required
 - text HTML required

@@ -3,12 +3,14 @@ import type {
   CreateLearningNoteRequest,
   LearningNote,
   LearningNoteKind,
+  NoteKindFilter,
 } from "../types/learning";
 import { RichTextEditor } from "./RichTextEditor";
 
 type NoteFormProps = {
   note: LearningNote | null;
   defaultLanguageCode: string;
+  defaultKind: NoteKindFilter;
   isSaving: boolean;
   saveError: string | null;
   onSave: (payload: CreateLearningNoteRequest) => Promise<void>;
@@ -31,11 +33,14 @@ const emptyForm = (languageCode: string): FormState => ({
 export function NoteForm({
   note,
   defaultLanguageCode,
+  defaultKind,
   isSaving,
   saveError,
   onSave,
   onCancel,
 }: NoteFormProps) {
+  const createKind: LearningNoteKind = defaultKind === "all" ? "word" : defaultKind;
+
   const [form, setForm] = useState<FormState>(() =>
     note
       ? {
@@ -46,7 +51,7 @@ export function NoteForm({
           tags: note.tags,
           tagsText: note.tags.join(", "),
         }
-      : emptyForm(defaultLanguageCode),
+      : { ...emptyForm(defaultLanguageCode), kind: createKind },
   );
   const [validationError, setValidationError] = useState<string | null>(null);
 
@@ -61,10 +66,10 @@ export function NoteForm({
             tags: note.tags,
             tagsText: note.tags.join(", "),
           }
-        : emptyForm(defaultLanguageCode),
+        : { ...emptyForm(defaultLanguageCode), kind: createKind },
     );
     setValidationError(null);
-  }, [defaultLanguageCode, note]);
+  }, [createKind, defaultLanguageCode, note]);
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
@@ -80,8 +85,8 @@ export function NoteForm({
         .filter(Boolean),
     };
 
-    if (!payload.language_code || !payload.kind || !payload.title || !payload.text_html) {
-      setValidationError("Language, kind, title, and note body are required.");
+    if (!payload.language_code || !payload.title || !payload.text_html) {
+      setValidationError("Language, title, and note body are required.");
       return;
     }
 
@@ -107,7 +112,7 @@ export function NoteForm({
         </div>
       )}
 
-      <div className="form-grid">
+      <div className="form-grid single">
         <label className="field">
           Language code
           <input
@@ -118,23 +123,6 @@ export function NoteForm({
               setForm({ ...form, language_code: event.target.value })
             }
           />
-        </label>
-
-        <label className="field">
-          Kind
-          <select
-            value={form.kind}
-            onChange={(event) =>
-              setForm({
-                ...form,
-                kind: event.target.value as LearningNoteKind,
-              })
-            }
-          >
-            <option value="word">Word</option>
-            <option value="phrase">Phrase</option>
-            <option value="grammar">Grammar</option>
-          </select>
         </label>
       </div>
 

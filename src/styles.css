@@ -451,6 +451,10 @@ button:focus-visible {
   grid-template-columns: 160px minmax(160px, 1fr);
 }
 
+.form-grid.single {
+  grid-template-columns: minmax(160px, 220px);
+}
+
 .rich-editor {
   background: #ffffff;
   border: 1px solid #cfd3cb;

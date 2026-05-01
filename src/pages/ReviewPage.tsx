@@ -249,6 +249,7 @@ export function ReviewPage() {
             <NoteForm
               note={editorMode === "edit" ? selectedNote : null}
               defaultLanguageCode={filters.languageCode}
+              defaultKind={filters.kind}
               isSaving={isSaving}
               saveError={saveError}
               onSave={handleSave}
