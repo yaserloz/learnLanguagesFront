@@ -32,16 +32,11 @@ The backend stores notes in SQLite. The frontend should not assume a remote data
 
 ## Product Goal
 
-Create a small study app where the user can save and review:
-
-- words
-- phrases
-- grammar notes
+Create a small study app where the user can save and review language-learning notes.
 
 Each note has:
 
 - language code: `de`, `fr`, or `en`
-- kind: `word`, `phrase`, or `grammar`
 - title
 - HTML note body as `text_html`
 - tags
@@ -78,7 +73,7 @@ Avoid:
 
 Use a practical layout:
 
-- left/sidebar or top controls for language/kind filters
+- left/sidebar or top controls for language filters
 - main review queue
 - note editor panel or route
 - clear `Mark Reviewed` action
@@ -110,7 +105,6 @@ npm run dev
 type LearningNote = {
   id: string;
   language_code: "de" | "fr" | "en";
-  kind: "word" | "phrase" | "grammar";
   title: string;
   text_html: string;
   tags: string[];
@@ -126,7 +120,6 @@ type LearningNote = {
 ```ts
 type CreateLearningNoteRequest = {
   language_code: "de" | "fr" | "en";
-  kind: "word" | "phrase" | "grammar";
   title: string;
   text_html: string;
   tags?: string[];
@@ -138,7 +131,6 @@ type CreateLearningNoteRequest = {
 ```ts
 type UpdateLearningNoteRequest = {
   language_code?: "de" | "fr" | "en";
-  kind?: "word" | "phrase" | "grammar";
   title?: string;
   text_html?: string;
   tags?: string[];
@@ -152,7 +144,6 @@ Use these endpoints:
 ```text
 GET    /api/v1/notes
 GET    /api/v1/notes?language_code=de
-GET    /api/v1/notes?language_code=de&kind=word
 GET    /api/v1/notes?q=akkusativ
 GET    /api/v1/notes/{id}
 POST   /api/v1/notes
@@ -185,7 +176,6 @@ This should be the default screen.
 Show:
 
 - current language selector
-- kind filter: all, word, phrase, grammar
 - search input
 - list of notes ordered by review priority
 - selected/current note content
@@ -194,7 +184,6 @@ Show:
 Each note list item should show:
 
 - title
-- kind
 - tags
 - review count
 - last reviewed date or `Never reviewed`
@@ -206,7 +195,6 @@ Support creating and editing notes.
 Fields:
 
 - language code
-- kind
 - title
 - text HTML
 - tags
@@ -217,7 +205,6 @@ Validation:
 
 - language code required
 - language code must be `de`, `fr`, or `en`
-- kind required
 - title required
 - text HTML required
 
@@ -266,7 +253,6 @@ src/
 ```ts
 type NoteFilters = {
   languageCode: string;
-  kind: "all" | "word" | "phrase" | "grammar";
   search: string;
 };
 
@@ -339,7 +325,6 @@ Good test notes:
 ```json
 {
   "language_code": "de",
-  "kind": "word",
   "title": "der Termin",
   "text_html": "<p>appointment</p>",
   "tags": ["work", "noun"]
@@ -349,7 +334,6 @@ Good test notes:
 ```json
 {
   "language_code": "de",
-  "kind": "phrase",
   "title": "Ich hätte gern einen Kaffee.",
   "text_html": "<p>I would like a coffee.</p>",
   "tags": ["restaurant", "polite"]
@@ -359,7 +343,6 @@ Good test notes:
 ```json
 {
   "language_code": "de",
-  "kind": "grammar",
   "title": "Akkusativ after für",
   "text_html": "<p>The preposition <strong>für</strong> always takes accusative.</p>",
   "tags": ["grammar", "akkusativ"]
@@ -382,7 +365,7 @@ Keep user-entered form data if save fails.
 The first version is done when:
 
 - user can list notes
-- user can filter by language and kind
+- user can filter by language
 - user can search notes
 - user can create a note
 - user can edit a note

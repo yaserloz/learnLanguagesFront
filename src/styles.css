@@ -99,7 +99,7 @@ button:disabled {
   border-radius: 8px;
   display: grid;
   gap: 12px;
-  grid-template-columns: minmax(120px, 160px) auto minmax(200px, 1fr) auto;
+  grid-template-columns: minmax(120px, 160px) minmax(200px, 1fr) auto;
   padding: 14px;
 }
 
@@ -138,27 +138,6 @@ textarea:focus,
 button:focus-visible {
   border-color: #2d6f62;
   outline: 3px solid rgba(45, 111, 98, 0.16);
-}
-
-.kind-filter {
-  background: #edf0eb;
-  border: 1px solid #d8ddd5;
-  border-radius: 8px;
-  display: grid;
-  grid-template-columns: repeat(4, minmax(72px, 1fr));
-  padding: 3px;
-}
-
-.kind-filter button {
-  border: 0;
-  background: transparent;
-  min-height: 34px;
-  padding: 0 10px;
-}
-
-.kind-filter button.active {
-  background: #ffffff;
-  box-shadow: 0 1px 4px rgba(29, 37, 34, 0.12);
 }
 
 .primary-action,
@@ -606,10 +585,6 @@ button:focus-visible {
 }
 
 @media (max-width: 560px) {
-  .kind-filter {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
   .stats-strip {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }

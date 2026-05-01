@@ -94,10 +94,6 @@ export async function listNotes(filters: NoteFilters) {
   const params = new URLSearchParams();
   params.set("language_code", filters.languageCode);
 
-  if (filters.kind !== "all") {
-    params.set("kind", filters.kind);
-  }
-
   if (filters.search) {
     params.set("q", filters.search);
   }

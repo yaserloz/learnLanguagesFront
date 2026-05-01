@@ -23,7 +23,6 @@ type EditorMode = "closed" | "create" | "edit";
 
 const initialFilters: NoteFilters = {
   languageCode: "de",
-  kind: "all",
   search: "",
 };
 
@@ -132,10 +131,6 @@ export function ReviewPage() {
       const nextFilters: NoteFilters = {
         ...filters,
         languageCode: savedNote.language_code,
-        kind:
-          filters.kind === "all" || filters.kind === savedNote.kind
-            ? filters.kind
-            : "all",
       };
 
       setEditorMode("closed");
@@ -249,7 +244,6 @@ export function ReviewPage() {
             <NoteForm
               note={editorMode === "edit" ? selectedNote : null}
               defaultLanguageCode={filters.languageCode}
-              defaultKind={filters.kind}
               isSaving={isSaving}
               saveError={saveError}
               onSave={handleSave}

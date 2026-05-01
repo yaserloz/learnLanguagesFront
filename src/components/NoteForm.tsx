@@ -2,15 +2,12 @@ import { FormEvent, useEffect, useState } from "react";
 import type {
   CreateLearningNoteRequest,
   LearningNote,
-  LearningNoteKind,
-  NoteKindFilter,
 } from "../types/learning";
 import { RichTextEditor } from "./RichTextEditor";
 
 type NoteFormProps = {
   note: LearningNote | null;
   defaultLanguageCode: string;
-  defaultKind: NoteKindFilter;
   isSaving: boolean;
   saveError: string | null;
   onSave: (payload: CreateLearningNoteRequest) => Promise<void>;
@@ -33,14 +30,11 @@ const emptyForm = (languageCode: string): FormState => ({
 export function NoteForm({
   note,
   defaultLanguageCode,
-  defaultKind,
   isSaving,
   saveError,
   onSave,
   onCancel,
 }: NoteFormProps) {
-  const createKind: LearningNoteKind = defaultKind === "all" ? "word" : defaultKind;
-
   const [form, setForm] = useState<FormState>(() =>
     note
       ? {
@@ -51,7 +45,7 @@ export function NoteForm({
           tags: note.tags,
           tagsText: note.tags.join(", "),
         }
-      : { ...emptyForm(defaultLanguageCode), kind: createKind },
+      : emptyForm(defaultLanguageCode),
   );
   const [validationError, setValidationError] = useState<string | null>(null);
 
@@ -66,10 +60,10 @@ export function NoteForm({
             tags: note.tags,
             tagsText: note.tags.join(", "),
           }
-        : { ...emptyForm(defaultLanguageCode), kind: createKind },
+        : emptyForm(defaultLanguageCode),
     );
     setValidationError(null);
-  }, [createKind, defaultLanguageCode, note]);
+  }, [defaultLanguageCode, note]);
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();

@@ -1,11 +1,4 @@
-import type { LanguageSummary, NoteFilters, NoteKindFilter } from "../types/learning";
-
-const kindOptions: Array<{ value: NoteKindFilter; label: string }> = [
-  { value: "all", label: "All" },
-  { value: "word", label: "Words" },
-  { value: "phrase", label: "Phrases" },
-  { value: "grammar", label: "Grammar" },
-];
+import type { LanguageSummary, NoteFilters } from "../types/learning";
 
 type FilterBarProps = {
   filters: NoteFilters;
@@ -45,19 +38,6 @@ export function FilterBar({
             </option>
           ))}
         </select>
-      </div>
-
-      <div className="kind-filter" role="group" aria-label="Note kind">
-        {kindOptions.map((option) => (
-          <button
-            className={filters.kind === option.value ? "active" : ""}
-            key={option.value}
-            type="button"
-            onClick={() => onChange({ ...filters, kind: option.value })}
-          >
-            {option.label}
-          </button>
-        ))}
       </div>
 
       <div className="field search-field">

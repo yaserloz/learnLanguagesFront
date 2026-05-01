@@ -28,10 +28,7 @@ export type LanguageSummary = {
   note_count: number;
 };
 
-export type NoteKindFilter = "all" | LearningNoteKind;
-
 export type NoteFilters = {
   languageCode: string;
-  kind: NoteKindFilter;
   search: string;
 };
