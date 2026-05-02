@@ -18,6 +18,7 @@ export function ReviewStats({
   summary,
   activity,
 }: ReviewStatsProps) {
+  const activityDays = Array.isArray(activity) ? activity : [];
   const neverReviewed =
     summary?.never_reviewed ??
     notes.filter((note) => !note.last_reviewed_at_utc).length;
@@ -28,7 +29,7 @@ export function ReviewStats({
   const trackedEvents = summary?.tracked_review_events ?? 0;
   const maxActivity = Math.max(
     1,
-    ...activity.map((day) => Math.max(0, day.review_count)),
+    ...activityDays.map((day) => Math.max(0, day.review_count)),
   );
 
   return (
@@ -56,9 +57,9 @@ export function ReviewStats({
         </div>
       </div>
 
-      {activity.length > 0 ? (
+      {activityDays.length > 0 ? (
         <div className="activity-chart" aria-label="Daily review activity">
-          {activity.map((day, index) => {
+          {activityDays.map((day, index) => {
             const label = day.date ?? day.day ?? `Day ${index + 1}`;
             const height = Math.max(8, (day.review_count / maxActivity) * 52);
 

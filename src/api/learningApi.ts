@@ -18,6 +18,17 @@ type ApiErrorBody = {
   errors?: Record<string, string[]>;
 };
 
+type ArrayResponse<T> =
+  | T[]
+  | {
+      activity?: T[];
+      data?: T[];
+      items?: T[];
+      languages?: T[];
+      notes?: T[];
+      days?: T[];
+    };
+
 export class ApiError extends Error {
   status: number;
 
@@ -95,6 +106,25 @@ async function fetchJson<T>(
   return (await response.json()) as T;
 }
 
+function unwrapArray<T>(
+  response: ArrayResponse<T>,
+  keys: Array<keyof Exclude<ArrayResponse<T>, T[]>>,
+) {
+  if (Array.isArray(response)) {
+    return response;
+  }
+
+  for (const key of keys) {
+    const value = response[key];
+
+    if (Array.isArray(value)) {
+      return value;
+    }
+  }
+
+  return [];
+}
+
 export async function listNotes(filters: NoteFilters) {
   const params = new URLSearchParams();
   params.set("language_code", filters.languageCode);
@@ -103,11 +133,20 @@ export async function listNotes(filters: NoteFilters) {
     params.set("q", filters.search);
   }
 
-  return fetchJson<LearningNote[]>("/api/v1/notes", undefined, params);
+  const response = await fetchJson<ArrayResponse<LearningNote>>(
+    "/api/v1/notes",
+    undefined,
+    params,
+  );
+
+  return unwrapArray(response, ["notes", "items", "data"]);
 }
 
 export async function listLanguages() {
-  return fetchJson<LanguageSummary[]>("/api/v1/languages");
+  const response =
+    await fetchJson<ArrayResponse<LanguageSummary>>("/api/v1/languages");
+
+  return unwrapArray(response, ["languages", "items", "data"]);
 }
 
 export async function createNote(payload: CreateLearningNoteRequest) {
@@ -147,9 +186,11 @@ export async function getReviewActivity(days = 30) {
   const params = new URLSearchParams();
   params.set("days", String(days));
 
-  return fetchJson<ReviewActivityDay[]>(
+  const response = await fetchJson<ArrayResponse<ReviewActivityDay>>(
     "/api/v1/stats/activity",
     undefined,
     params,
   );
+
+  return unwrapArray(response, ["activity", "days", "items", "data"]);
 }
