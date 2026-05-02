@@ -1,9 +1,8 @@
-export type LearningNoteKind = "word" | "phrase" | "grammar";
+export type LanguageCode = "de" | "fr" | "en";
 
 export type LearningNote = {
   id: string;
-  language_code: string;
-  kind: LearningNoteKind;
+  language_code: LanguageCode;
   title: string;
   text_html: string;
   tags: string[];
@@ -14,8 +13,7 @@ export type LearningNote = {
 };
 
 export type CreateLearningNoteRequest = {
-  language_code: string;
-  kind: LearningNoteKind;
+  language_code: LanguageCode;
   title: string;
   text_html: string;
   tags?: string[];
@@ -24,11 +22,26 @@ export type CreateLearningNoteRequest = {
 export type UpdateLearningNoteRequest = Partial<CreateLearningNoteRequest>;
 
 export type LanguageSummary = {
-  language_code: string;
+  language_code: LanguageCode;
   note_count: number;
 };
 
 export type NoteFilters = {
-  languageCode: string;
+  languageCode: LanguageCode;
   search: string;
+};
+
+export type StatsSummary = {
+  total_notes: number;
+  total_review_count: number;
+  tracked_review_events: number;
+  never_reviewed: number;
+  reviewed_notes: number;
+  average_review_count: number;
+};
+
+export type ReviewActivityDay = {
+  date?: string;
+  day?: string;
+  review_count: number;
 };

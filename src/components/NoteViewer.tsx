@@ -30,7 +30,6 @@ export function NoteViewer({
     <section className="viewer" aria-labelledby="selected-note-title">
       <div className="viewer-header">
         <div>
-          <span className={`kind-badge ${note.kind}`}>{note.kind}</span>
           <h1 id="selected-note-title">{note.title}</h1>
         </div>
         <div className="viewer-actions">

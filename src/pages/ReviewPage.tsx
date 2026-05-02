@@ -2,6 +2,8 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   createNote,
   deleteNote,
+  getReviewActivity,
+  getStatsSummary,
   listLanguages,
   listNotes,
   reviewNote,
@@ -17,6 +19,8 @@ import type {
   LanguageSummary,
   LearningNote,
   NoteFilters,
+  ReviewActivityDay,
+  StatsSummary,
 } from "../types/learning";
 
 type EditorMode = "closed" | "create" | "edit";
@@ -34,6 +38,8 @@ export function ReviewPage() {
   const [filters, setFilters] = useState<NoteFilters>(initialFilters);
   const [notes, setNotes] = useState<LearningNote[]>([]);
   const [languages, setLanguages] = useState<LanguageSummary[]>([]);
+  const [statsSummary, setStatsSummary] = useState<StatsSummary | null>(null);
+  const [reviewActivity, setReviewActivity] = useState<ReviewActivityDay[]>([]);
   const [selectedNoteId, setSelectedNoteId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -47,6 +53,21 @@ export function ReviewPage() {
     () => notes.find((note) => note.id === selectedNoteId) ?? null,
     [notes, selectedNoteId],
   );
+
+  const loadStats = useCallback(async () => {
+    try {
+      const [summary, activity] = await Promise.all([
+        getStatsSummary(),
+        getReviewActivity(30),
+      ]);
+
+      setStatsSummary(summary);
+      setReviewActivity(activity);
+    } catch {
+      setStatsSummary(null);
+      setReviewActivity([]);
+    }
+  }, []);
 
   const loadNotes = useCallback(
     async (
@@ -106,7 +127,8 @@ export function ReviewPage() {
     }
 
     void loadLanguageSummaries();
-  }, []);
+    void loadStats();
+  }, [loadStats]);
 
   function openCreateForm() {
     setSaveError(null);
@@ -162,6 +184,8 @@ export function ReviewPage() {
       } catch {
         setLanguages([]);
       }
+
+      await loadStats();
     } catch (saveFailed) {
       setSaveError(getErrorMessage(saveFailed));
     } finally {
@@ -183,6 +207,7 @@ export function ReviewPage() {
     try {
       await reviewNote(selectedNote.id);
       await loadNotes(nextQueuedNote);
+      await loadStats();
     } catch (reviewFailed) {
       setError(getErrorMessage(reviewFailed));
     } finally {
@@ -211,6 +236,8 @@ export function ReviewPage() {
       } catch {
         setLanguages([]);
       }
+
+      await loadStats();
     } catch (deleteFailed) {
       setError(getErrorMessage(deleteFailed));
     } finally {
@@ -243,7 +270,12 @@ export function ReviewPage() {
         </div>
       ) : null}
 
-      <ReviewStats notes={notes} languages={languages} />
+      <ReviewStats
+        notes={notes}
+        languages={languages}
+        summary={statsSummary}
+        activity={reviewActivity}
+      />
 
       <div className="workspace">
         <aside className="queue-panel" aria-label="Notes">

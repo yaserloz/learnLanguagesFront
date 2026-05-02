@@ -152,6 +152,8 @@ PUT    /api/v1/notes/{id}
 POST   /api/v1/notes/{id}/review
 DELETE /api/v1/notes/{id}
 GET    /api/v1/languages
+GET    /api/v1/stats/summary
+GET    /api/v1/stats/activity?days=30
 ```
 
 Important:
@@ -366,6 +368,30 @@ Frontend behavior:
 3. show imported count from `imported_count`
 4. refetch the note list after successful import
 5. if import fails, show the backend error and do not clear the selected file automatically
+
+## Stats
+
+Use:
+
+```text
+GET /api/v1/stats/summary
+GET /api/v1/stats/activity?days=30
+```
+
+Recommended UI:
+
+- total notes
+- total review count
+- tracked review events
+- never reviewed
+- reviewed notes
+- average review count
+- daily review activity chart
+
+Important:
+
+- `total_review_count` comes from `notes.review_count`, so it includes older reviews.
+- `tracked_review_events` only includes reviews recorded after the `review_events` table was added.
 
 ## Initial German Seed Examples
 

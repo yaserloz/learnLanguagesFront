@@ -38,7 +38,6 @@ export function NoteList({
             <span className="note-row-main">
               <span className="note-title">{note.title}</span>
               <span className="note-meta">
-                <span className={`kind-badge ${note.kind}`}>{note.kind}</span>
                 <span>{note.review_count} reviews</span>
                 <span>{formatReviewDate(note.last_reviewed_at_utc)}</span>
               </span>

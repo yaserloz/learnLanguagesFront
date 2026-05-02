@@ -1,6 +1,7 @@
 import { FormEvent, useEffect, useState } from "react";
 import type {
   CreateLearningNoteRequest,
+  LanguageCode,
   LearningNote,
 } from "../types/learning";
 import { RichTextEditor } from "./RichTextEditor";
@@ -15,13 +16,13 @@ type NoteFormProps = {
   onCancel: () => void;
 };
 
-type FormState = CreateLearningNoteRequest & {
+type FormState = Omit<CreateLearningNoteRequest, "language_code"> & {
+  language_code: string;
   tagsText: string;
 };
 
 const emptyForm = (languageCode: string): FormState => ({
   language_code: languageCode,
-  kind: "word",
   title: "",
   text_html: "",
   tags: [],
@@ -41,7 +42,6 @@ export function NoteForm({
     note
       ? {
           language_code: note.language_code,
-          kind: note.kind,
           title: note.title,
           text_html: note.text_html,
           tags: note.tags,
@@ -56,7 +56,6 @@ export function NoteForm({
       note
         ? {
             language_code: note.language_code,
-            kind: note.kind,
             title: note.title,
             text_html: note.text_html,
             tags: note.tags,
@@ -71,8 +70,7 @@ export function NoteForm({
     event.preventDefault();
 
     const payload: CreateLearningNoteRequest = {
-      language_code: form.language_code.trim().toLowerCase(),
-      kind: form.kind,
+      language_code: form.language_code.trim().toLowerCase() as LanguageCode,
       title: form.title.trim(),
       text_html: form.text_html.trim(),
       tags: form.tagsText
@@ -83,6 +81,11 @@ export function NoteForm({
 
     if (!payload.language_code || !payload.title || !payload.text_html) {
       setValidationError("Language, title, and note body are required.");
+      return;
+    }
+
+    if (!["de", "fr", "en"].includes(payload.language_code)) {
+      setValidationError("Language code must be de, fr, or en.");
       return;
     }
 

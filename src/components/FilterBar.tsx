@@ -1,4 +1,4 @@
-import type { LanguageSummary, NoteFilters } from "../types/learning";
+import type { LanguageCode, LanguageSummary, NoteFilters } from "../types/learning";
 
 type FilterBarProps = {
   filters: NoteFilters;
@@ -13,7 +13,7 @@ export function FilterBar({
   onChange,
   onCreate,
 }: FilterBarProps) {
-  const knownLanguages = languages.length
+  const knownLanguages: LanguageSummary[] = languages.length
     ? languages
     : [{ language_code: filters.languageCode, note_count: 0 }];
 
@@ -25,7 +25,10 @@ export function FilterBar({
           id="language"
           value={filters.languageCode}
           onChange={(event) =>
-            onChange({ ...filters, languageCode: event.target.value })
+            onChange({
+              ...filters,
+              languageCode: event.target.value as LanguageCode,
+            })
           }
         >
           {knownLanguages.map((language) => (

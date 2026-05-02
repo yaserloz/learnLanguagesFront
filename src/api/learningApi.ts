@@ -3,6 +3,8 @@ import type {
   LanguageSummary,
   LearningNote,
   NoteFilters,
+  ReviewActivityDay,
+  StatsSummary,
   UpdateLearningNoteRequest,
 } from "../types/learning";
 
@@ -65,10 +67,13 @@ async function fetchJson<T>(
   let response: Response;
 
   try {
+    const isFormData = init?.body instanceof FormData;
     response = await fetch(buildUrl(path, params), {
       ...init,
       headers: {
-        ...(init?.body ? { "Content-Type": "application/json" } : {}),
+        ...(init?.body && !isFormData
+          ? { "Content-Type": "application/json" }
+          : {}),
         ...init?.headers,
       },
     });
@@ -132,4 +137,19 @@ export async function deleteNote(id: string) {
   return fetchJson<void>(`/api/v1/notes/${id}`, {
     method: "DELETE",
   });
+}
+
+export async function getStatsSummary() {
+  return fetchJson<StatsSummary>("/api/v1/stats/summary");
+}
+
+export async function getReviewActivity(days = 30) {
+  const params = new URLSearchParams();
+  params.set("days", String(days));
+
+  return fetchJson<ReviewActivityDay[]>(
+    "/api/v1/stats/activity",
+    undefined,
+    params,
+  );
 }
