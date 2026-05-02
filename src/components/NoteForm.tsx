@@ -8,6 +8,7 @@ import { RichTextEditor } from "./RichTextEditor";
 type NoteFormProps = {
   note: LearningNote | null;
   defaultLanguageCode: string;
+  titleId?: string;
   isSaving: boolean;
   saveError: string | null;
   onSave: (payload: CreateLearningNoteRequest) => Promise<void>;
@@ -30,6 +31,7 @@ const emptyForm = (languageCode: string): FormState => ({
 export function NoteForm({
   note,
   defaultLanguageCode,
+  titleId,
   isSaving,
   saveError,
   onSave,
@@ -93,7 +95,7 @@ export function NoteForm({
       <div className="form-header">
         <div>
           <span className="eyebrow">{note ? "Edit note" : "Create note"}</span>
-          <h2>{note ? note.title : "New study note"}</h2>
+          <h2 id={titleId}>{note ? note.title : "New study note"}</h2>
         </div>
         <button type="button" onClick={onCancel}>
           Cancel

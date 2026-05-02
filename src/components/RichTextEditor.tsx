@@ -1,3 +1,19 @@
+import {
+  Bold,
+  CodeXml,
+  Eraser,
+  Italic,
+  Link,
+  List,
+  ListOrdered,
+  Quote,
+  Redo2,
+  RemoveFormatting,
+  Strikethrough,
+  Underline,
+  Undo2,
+  type LucideIcon,
+} from "lucide-react";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 
 type RichTextEditorProps = {
@@ -8,28 +24,28 @@ type RichTextEditorProps = {
 
 type CommandButton = {
   command: string;
-  label: string;
+  icon: LucideIcon;
   title: string;
   value?: string;
 };
 
 const inlineCommands: CommandButton[] = [
-  { command: "bold", label: "B", title: "Bold" },
-  { command: "italic", label: "I", title: "Italic" },
-  { command: "underline", label: "U", title: "Underline" },
-  { command: "strikeThrough", label: "S", title: "Strikethrough" },
+  { command: "bold", icon: Bold, title: "Bold" },
+  { command: "italic", icon: Italic, title: "Italic" },
+  { command: "underline", icon: Underline, title: "Underline" },
+  { command: "strikeThrough", icon: Strikethrough, title: "Strikethrough" },
 ];
 
 const blockCommands: CommandButton[] = [
-  { command: "insertUnorderedList", label: "UL", title: "Bulleted list" },
-  { command: "insertOrderedList", label: "OL", title: "Numbered list" },
-  { command: "formatBlock", label: "Quote", title: "Quote", value: "blockquote" },
+  { command: "insertUnorderedList", icon: List, title: "Bulleted list" },
+  { command: "insertOrderedList", icon: ListOrdered, title: "Numbered list" },
+  { command: "formatBlock", icon: Quote, title: "Quote", value: "blockquote" },
 ];
 
 const historyCommands: CommandButton[] = [
-  { command: "undo", label: "Undo", title: "Undo" },
-  { command: "redo", label: "Redo", title: "Redo" },
-  { command: "removeFormat", label: "Clear", title: "Clear formatting" },
+  { command: "undo", icon: Undo2, title: "Undo" },
+  { command: "redo", icon: Redo2, title: "Redo" },
+  { command: "removeFormat", icon: Eraser, title: "Clear formatting" },
 ];
 
 function normalizeEmptyHtml(html: string) {
@@ -39,14 +55,23 @@ function normalizeEmptyHtml(html: string) {
 
 export function RichTextEditor({ id, value, onChange }: RichTextEditorProps) {
   const editorRef = useRef<HTMLDivElement | null>(null);
+  const lastSyncedHtmlRef = useRef(value);
   const [isSourceMode, setIsSourceMode] = useState(false);
   const [sourceValue, setSourceValue] = useState(value);
 
   useEffect(() => {
-    if (!isSourceMode && editorRef.current && editorRef.current.innerHTML !== value) {
+    const hasExternalUpdate = value !== lastSyncedHtmlRef.current;
+
+    if (
+      !isSourceMode &&
+      hasExternalUpdate &&
+      editorRef.current &&
+      editorRef.current.innerHTML !== value
+    ) {
       editorRef.current.innerHTML = value;
     }
 
+    lastSyncedHtmlRef.current = value;
     setSourceValue(value);
   }, [isSourceMode, value]);
 
@@ -55,7 +80,9 @@ export function RichTextEditor({ id, value, onChange }: RichTextEditorProps) {
       return;
     }
 
-    onChange(normalizeEmptyHtml(editorRef.current.innerHTML));
+    const html = normalizeEmptyHtml(editorRef.current.innerHTML);
+    lastSyncedHtmlRef.current = html;
+    onChange(html);
   }
 
   function runCommand(command: string, commandValue?: string) {
@@ -81,6 +108,7 @@ export function RichTextEditor({ id, value, onChange }: RichTextEditorProps) {
 
   function handleSourceChange(nextValue: string) {
     setSourceValue(nextValue);
+    lastSyncedHtmlRef.current = nextValue;
     onChange(nextValue);
   }
 
@@ -101,38 +129,29 @@ export function RichTextEditor({ id, value, onChange }: RichTextEditorProps) {
 
         <div className="toolbar-group" role="group" aria-label="Inline style">
           {inlineCommands.map((button) => (
-            <button
+            <ToolbarButton
               key={button.command}
-              type="button"
-              title={button.title}
-              aria-label={button.title}
+              button={button}
               disabled={isSourceMode}
-              onMouseDown={(event) => event.preventDefault()}
               onClick={() => runCommand(button.command, button.value)}
-            >
-              {button.label}
-            </button>
+            />
           ))}
         </div>
 
         <div className="toolbar-group" role="group" aria-label="Blocks">
           {blockCommands.map((button) => (
-            <button
+            <ToolbarButton
               key={button.title}
-              type="button"
-              title={button.title}
-              aria-label={button.title}
+              button={button}
               disabled={isSourceMode}
-              onMouseDown={(event) => event.preventDefault()}
               onClick={() => runCommand(button.command, button.value)}
-            >
-              {button.label}
-            </button>
+            />
           ))}
         </div>
 
         <div className="toolbar-group" role="group" aria-label="Links">
           <button
+            className="icon-button"
             type="button"
             title="Add link"
             aria-label="Add link"
@@ -140,9 +159,10 @@ export function RichTextEditor({ id, value, onChange }: RichTextEditorProps) {
             onMouseDown={(event) => event.preventDefault()}
             onClick={addLink}
           >
-            Link
+            <Link aria-hidden="true" size={17} strokeWidth={2.3} />
           </button>
           <button
+            className="icon-button"
             type="button"
             title="Remove link"
             aria-label="Remove link"
@@ -150,34 +170,29 @@ export function RichTextEditor({ id, value, onChange }: RichTextEditorProps) {
             onMouseDown={(event) => event.preventDefault()}
             onClick={() => runCommand("unlink")}
           >
-            Unlink
+            <RemoveFormatting aria-hidden="true" size={17} strokeWidth={2.3} />
           </button>
         </div>
 
         <div className="toolbar-group" role="group" aria-label="History">
           {historyCommands.map((button) => (
-            <button
+            <ToolbarButton
               key={button.command}
-              type="button"
-              title={button.title}
-              aria-label={button.title}
+              button={button}
               disabled={isSourceMode}
-              onMouseDown={(event) => event.preventDefault()}
               onClick={() => runCommand(button.command, button.value)}
-            >
-              {button.label}
-            </button>
+            />
           ))}
         </div>
 
         <button
-          className={isSourceMode ? "active-source" : ""}
+          className={`icon-button ${isSourceMode ? "active-source" : ""}`}
           type="button"
           title="Edit HTML"
           aria-label="Edit HTML"
           onClick={() => setIsSourceMode((current) => !current)}
         >
-          HTML
+          <CodeXml aria-hidden="true" size={17} strokeWidth={2.3} />
         </button>
       </div>
 
@@ -197,15 +212,39 @@ export function RichTextEditor({ id, value, onChange }: RichTextEditorProps) {
           className="editor-surface"
           contentEditable
           suppressContentEditableWarning
+          dir="auto"
           role="textbox"
           aria-multiline="true"
           data-placeholder="<p>appointment</p>"
           spellCheck
           onInput={emitHtml}
           onBlur={emitHtml}
-          dangerouslySetInnerHTML={{ __html: value }}
         />
       )}
     </div>
+  );
+}
+
+type ToolbarButtonProps = {
+  button: CommandButton;
+  disabled: boolean;
+  onClick: () => void;
+};
+
+function ToolbarButton({ button, disabled, onClick }: ToolbarButtonProps) {
+  const Icon = button.icon;
+
+  return (
+    <button
+      className="icon-button"
+      type="button"
+      title={button.title}
+      aria-label={button.title}
+      disabled={disabled}
+      onMouseDown={(event) => event.preventDefault()}
+      onClick={onClick}
+    >
+      <Icon aria-hidden="true" size={17} strokeWidth={2.3} />
+    </button>
   );
 }

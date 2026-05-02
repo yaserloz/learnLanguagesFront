@@ -118,6 +118,26 @@ export function ReviewPage() {
     setEditorMode("edit");
   }
 
+  function closeEditor() {
+    setSaveError(null);
+    setEditorMode("closed");
+  }
+
+  useEffect(() => {
+    if (editorMode === "closed") {
+      return;
+    }
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        closeEditor();
+      }
+    }
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [editorMode]);
+
   async function handleSave(payload: CreateLearningNoteRequest) {
     setIsSaving(true);
     setSaveError(null);
@@ -133,7 +153,7 @@ export function ReviewPage() {
         languageCode: savedNote.language_code,
       };
 
-      setEditorMode("closed");
+      closeEditor();
       setFilters(nextFilters);
       await loadNotes(savedNote.id, nextFilters);
 
@@ -183,7 +203,7 @@ export function ReviewPage() {
 
     try {
       await deleteNote(selectedNote.id);
-      setEditorMode("closed");
+      closeEditor();
       await loadNotes(nextQueuedNote);
 
       try {
@@ -207,7 +227,7 @@ export function ReviewPage() {
           <p className="eyebrow">Daily review</p>
           <h1>Learn Languages</h1>
         </div>
-        <p className="api-note">Queue order comes from the API.</p>
+        <p className="api-note"></p>
       </header>
 
       <FilterBar
@@ -240,27 +260,45 @@ export function ReviewPage() {
         </aside>
 
         <div className="study-panel">
-          {showEditor ? (
+          <NoteViewer
+            note={selectedNote}
+            isReviewing={reviewingNoteId === selectedNote?.id}
+            isDeleting={deletingNoteId === selectedNote?.id}
+            onReview={handleReview}
+            onEdit={openEditForm}
+            onDelete={handleDelete}
+          />
+        </div>
+      </div>
+
+      {showEditor ? (
+        <div
+          className="modal-backdrop"
+          role="presentation"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) {
+              closeEditor();
+            }
+          }}
+        >
+          <section
+            className="form-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="note-form-title"
+          >
             <NoteForm
               note={editorMode === "edit" ? selectedNote : null}
               defaultLanguageCode={filters.languageCode}
+              titleId="note-form-title"
               isSaving={isSaving}
               saveError={saveError}
               onSave={handleSave}
-              onCancel={() => setEditorMode("closed")}
+              onCancel={closeEditor}
             />
-          ) : (
-            <NoteViewer
-              note={selectedNote}
-              isReviewing={reviewingNoteId === selectedNote?.id}
-              isDeleting={deletingNoteId === selectedNote?.id}
-              onReview={handleReview}
-              onEdit={openEditForm}
-              onDelete={handleDelete}
-            />
-          )}
+          </section>
         </div>
-      </div>
+      ) : null}
     </main>
   );
 }

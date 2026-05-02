@@ -424,6 +424,32 @@ button:focus-visible {
   background: #fffdfa;
 }
 
+.modal-backdrop {
+  align-items: center;
+  background: rgba(29, 37, 34, 0.48);
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  padding: 22px;
+  position: fixed;
+  z-index: 20;
+}
+
+.form-modal {
+  background: #fffdfa;
+  border: 1px solid #dedbd2;
+  border-radius: 8px;
+  box-shadow: 0 24px 80px rgba(29, 37, 34, 0.28);
+  max-height: min(900px, calc(100vh - 44px));
+  max-width: 880px;
+  overflow: auto;
+  width: min(100%, 880px);
+}
+
+.form-modal .note-form {
+  min-height: auto;
+}
+
 .form-grid {
   display: grid;
   gap: 14px;
@@ -465,12 +491,20 @@ button:focus-visible {
 }
 
 .editor-toolbar button {
+  align-items: center;
   border-radius: 6px;
+  display: inline-flex;
   font-size: 0.78rem;
   font-weight: 800;
+  justify-content: center;
   min-height: 34px;
-  min-width: 38px;
-  padding: 0 9px;
+  min-width: 36px;
+  padding: 0 8px;
+}
+
+.editor-toolbar .icon-button {
+  aspect-ratio: 1;
+  padding: 0;
 }
 
 .editor-toolbar button.active-source {
@@ -495,6 +529,8 @@ button:focus-visible {
   font-size: 1rem;
   font-weight: 500;
   overflow: auto;
+  text-align: start;
+  unicode-bidi: plaintext;
 }
 
 .editor-surface:empty::before {
@@ -592,6 +628,15 @@ button:focus-visible {
   .viewer,
   .note-form {
     padding: 16px;
+  }
+
+  .modal-backdrop {
+    align-items: stretch;
+    padding: 10px;
+  }
+
+  .form-modal {
+    max-height: calc(100vh - 20px);
   }
 
   .viewer-header,
