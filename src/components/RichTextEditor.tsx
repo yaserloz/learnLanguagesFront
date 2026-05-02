@@ -61,14 +61,15 @@ export function RichTextEditor({ id, value, onChange }: RichTextEditorProps) {
 
   useEffect(() => {
     const hasExternalUpdate = value !== lastSyncedHtmlRef.current;
+    const editor = editorRef.current;
 
     if (
       !isSourceMode &&
-      hasExternalUpdate &&
-      editorRef.current &&
-      editorRef.current.innerHTML !== value
+      editor &&
+      editor.innerHTML !== value &&
+      (hasExternalUpdate || editor.innerHTML === "")
     ) {
-      editorRef.current.innerHTML = value;
+      editor.innerHTML = value;
     }
 
     lastSyncedHtmlRef.current = value;

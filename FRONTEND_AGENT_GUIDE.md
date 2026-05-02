@@ -147,6 +147,7 @@ GET    /api/v1/notes?language_code=de
 GET    /api/v1/notes?q=akkusativ
 GET    /api/v1/notes/{id}
 POST   /api/v1/notes
+POST   /api/v1/notes/import
 PUT    /api/v1/notes/{id}
 POST   /api/v1/notes/{id}/review
 DELETE /api/v1/notes/{id}
@@ -315,6 +316,56 @@ When the user clicks `Mark Reviewed`:
 5. keep the UI focused on continuing study
 
 Do not ask for confirmation before marking reviewed. This should be a fast daily action.
+
+## JSON Import
+
+The frontend may add an import action that uploads a `.json` file through multipart form data:
+
+```text
+POST /api/v1/notes/import
+```
+
+Form field:
+
+```text
+file
+```
+
+Accepted raw array shape:
+
+```json
+[
+  {
+    "language_code": "de",
+    "title": "der Termin",
+    "text_html": "<p>appointment</p>",
+    "tags": ["work", "noun"]
+  }
+]
+```
+
+Accepted object shape:
+
+```json
+{
+  "notes": [
+    {
+      "language_code": "de",
+      "title": "Ich hätte gern einen Kaffee.",
+      "text_html": "<p>I would like a coffee.</p>",
+      "tags": ["restaurant", "polite"]
+    }
+  ]
+}
+```
+
+Frontend behavior:
+
+1. only allow `.json` file selection
+2. send `FormData` with `file`
+3. show imported count from `imported_count`
+4. refetch the note list after successful import
+5. if import fails, show the backend error and do not clear the selected file automatically
 
 ## Initial German Seed Examples
 
