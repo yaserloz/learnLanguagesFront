@@ -1,3 +1,4 @@
+import { ExternalLink } from "lucide-react";
 import type { LearningNote } from "../types/learning";
 import { formatDateTime, formatReviewDate } from "../utils/date";
 
@@ -26,11 +27,30 @@ export function NoteViewer({
     );
   }
 
+  const forvoUrl = `https://forvo.com/search/${encodeURIComponent(note.title)}/`;
+  const openForvoPopup = () => {
+    window.open(
+      forvoUrl,
+      "forvo-pronunciation",
+      "popup=yes,width=980,height=760,noopener,noreferrer",
+    );
+  };
+
   return (
     <section className="viewer" aria-labelledby="selected-note-title">
       <div className="viewer-header">
-        <div>
+        <div className="viewer-title-block">
           <h1 id="selected-note-title">{note.title}</h1>
+          <button
+            className="forvo-link"
+            title={`Open "${note.title}" on Forvo`}
+            aria-label={`Open ${note.title} on Forvo`}
+            type="button"
+            onClick={openForvoPopup}
+          >
+            Forvo
+            <ExternalLink aria-hidden="true" size={16} strokeWidth={2.3} />
+          </button>
         </div>
         <div className="viewer-actions">
           <button type="button" onClick={onEdit}>

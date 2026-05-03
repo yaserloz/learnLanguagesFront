@@ -374,8 +374,34 @@ button:focus-visible {
 .viewer h1 {
   font-size: clamp(1.8rem, 4vw, 3rem);
   line-height: 1.08;
-  margin-top: 10px;
   overflow-wrap: anywhere;
+}
+
+.viewer-title-block {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-top: 10px;
+}
+
+.forvo-link {
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid #c7cbc3;
+  border-radius: 8px;
+  color: #236255;
+  display: inline-flex;
+  font-size: 0.85rem;
+  font-weight: 800;
+  gap: 6px;
+  min-height: 36px;
+  padding: 0 10px;
+  text-decoration: none;
+}
+
+.forvo-link:hover {
+  border-color: #236255;
 }
 
 .viewer-actions {
