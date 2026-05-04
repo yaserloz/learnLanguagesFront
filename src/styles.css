@@ -194,22 +194,97 @@ button:focus-visible {
   font-weight: 800;
 }
 
-.activity-chart {
-  align-items: end;
+.activity-card {
+  align-items: stretch;
   background: #fffdfa;
   border: 1px solid #dedbd2;
   border-radius: 8px;
   display: grid;
-  gap: 3px;
-  grid-template-columns: repeat(30, minmax(3px, 1fr));
-  min-height: 74px;
-  padding: 10px;
+  gap: 18px;
+  grid-template-columns: 140px minmax(0, 1fr);
+  min-height: 210px;
+  padding: 14px;
 }
 
-.activity-chart span {
+.activity-glyph {
+  align-items: end;
+  align-self: center;
+  background: #ffffff;
+  border: 1px solid #e5e1d8;
+  border-radius: 8px;
+  display: flex;
+  gap: 5px;
+  height: 90px;
+  justify-content: center;
+  padding: 12px 12px 12px;
+}
+
+.activity-glyph span {
   background: #236255;
-  border-radius: 999px 999px 2px 2px;
-  min-height: 8px;
+  border-radius: 999px 999px 0 0;
+  display: block;
+  width: 42px;
+}
+
+.line-chart {
+  min-width: 0;
+}
+
+.chart-heading {
+  align-items: baseline;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.chart-heading h2 {
+  font-size: 0.92rem;
+  margin: 0;
+}
+
+.chart-heading span {
+  color: #68716b;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.line-chart svg {
+  display: block;
+  height: 180px;
+  overflow: visible;
+  width: 100%;
+}
+
+.chart-grid-line {
+  stroke: #e2e2dc;
+  stroke-width: 1;
+}
+
+.chart-line {
+  fill: none;
+  stroke: #236f8f;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 4;
+}
+
+.chart-point {
+  fill: #236255;
+  stroke: #fffdfa;
+  stroke-width: 2;
+}
+
+.chart-value,
+.chart-label {
+  fill: #59635d;
+  font-size: 13px;
+  font-weight: 700;
+  text-anchor: middle;
+}
+
+.chart-label {
+  font-size: 12px;
 }
 
 .workspace {
@@ -672,11 +747,28 @@ button:focus-visible {
   .stats-strip {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
+
+  .activity-card {
+    grid-template-columns: 1fr;
+  }
+
+  .activity-glyph {
+    justify-self: start;
+    width: 140px;
+  }
 }
 
 @media (max-width: 560px) {
   .stats-strip {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .activity-card {
+    padding: 10px;
+  }
+
+  .line-chart svg {
+    height: 160px;
   }
 
   .viewer,
